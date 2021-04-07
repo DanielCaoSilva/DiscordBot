@@ -1,6 +1,7 @@
 # bot.py
 import os
 import random
+import string
 from _ast import arg
 from asyncio import sleep
 
@@ -27,7 +28,12 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 client = discord.Client()
 
-
+stringMat = [r"C:\Users\dcaos\PycharmProjects\DiscordBot\babies.mp3",
+             r"C:\Users\dcaos\PycharmProjects\DiscordBot\Oh_Baby_A_Triple.mp3",
+             r"C:\Users\dcaos\PycharmProjects\DiscordBot\alright.mp3",
+             r"C:\Users\dcaos\PycharmProjects\DiscordBot\breath-stinks.mp3",
+             r"C:\Users\dcaos\PycharmProjects\DiscordBot\donkey.mp3",
+             r"C:\Users\dcaos\PycharmProjects\DiscordBot\donkey.mp3"]
 
 #Get videos from links or from youtube search
 def search(arg):
@@ -42,7 +48,7 @@ def get_Audio_Path(arg):
         1: r"C:\Users\dcaos\PycharmProjects\DiscordBot\babies.mp3",
         2: r"C:\Users\dcaos\PycharmProjects\DiscordBot\Oh_Baby_A_Triple.mp3",
     }
-    return switcher.get(arg,"nothing")
+    return switcher.get(arg, "nothing")
 
 
 
@@ -102,6 +108,8 @@ async def join(ctx):
     # author = ctx.message.author
     channel = ctx.author.voice.channel
     print('trying to join channel')
+    #print(get_Audio_Path(1))
+    print(stringMat[1])
     await channel.connect()
 
 
@@ -130,9 +138,11 @@ async def leave(ctx):
 async def play(ctx, *, query):
     #"""Plays a file from the local filesystem"""
     #Sample Command: ;play <path_name>
-    audioPath = get_Audio_Path(query)
-    print(audioPath+query)
-    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audioPath))
+    audioPath = get_Audio_Path(str(query))
+    print(str(audioPath)+str(query))
+    aP = stringMat[int(query)]
+    print(aP)
+    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(aP))
     ctx.voice_client.play(source, after=lambda e: print(f'Player error: {e}') if e else None)
 
     await ctx.send(f'Now playing: {query}')
@@ -151,6 +161,6 @@ async def plays(ctx, *, query):
     voice.play(FFmpegPCMAudio(source, **FFMPEG_OPTS), after=lambda e: print('done', e))
     voice.is_playing()
 
-# client.run(TOKEN)
+#client.run(TOKEN)
 bot.run(TOKEN)
 
