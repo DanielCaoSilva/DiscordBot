@@ -37,6 +37,13 @@ def search(arg):
         else: info = ydl.extract_info(arg, download=False)
     return info, info['formats'][0]['url']
 
+def get_Audio_Path(arg):
+    switcher = {
+        1: r"C:\Users\dcaos\PycharmProjects\DiscordBot\babies.mp3",
+        2: r"C:\Users\dcaos\PycharmProjects\DiscordBot\Oh_Baby_A_Triple.mp3",
+    }
+    return switcher.get(arg,"nothing")
+
 
 
 
@@ -108,15 +115,28 @@ async def leave(ctx):
 # async def stream(ctx,arg):
 #     print('trying to stream')
 
+# @bot.command()
+# async def play(ctx):
+#     #guild = ctx.guild
+#     guild = discord.utils.get(client.guilds, name=GUILD)
+#     voice_client: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
+#     #audio_source = discord.FFmpegOpusAudio(executable="C:/path/ffmpeg.exe", source="mp3.mp3"))
+#     audio_source = discord.FFmpegPCMAudio('babies.mp3')
+#     if not voice_client.is_playing():
+#         voice_client.play(audio_source, after=None)
+
+
 @bot.command()
-async def play(ctx):
-    #guild = ctx.guild
-    guild = discord.utils.get(client.guilds, name=GUILD)
-    voice_client: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=guild)
-    #audio_source = discord.FFmpegOpusAudio(executable="C:/path/ffmpeg.exe", source="mp3.mp3"))
-    audio_source = discord.FFmpegPCMAudio('babies.mp3')
-    if not voice_client.is_playing():
-        voice_client.play(audio_source, after=None)
+async def play(ctx, *, query):
+    #"""Plays a file from the local filesystem"""
+    #Sample Command: ;play <path_name>
+    audioPath = get_Audio_Path(query)
+    print(audioPath+query)
+    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audioPath))
+    ctx.voice_client.play(source, after=lambda e: print(f'Player error: {e}') if e else None)
+
+    await ctx.send(f'Now playing: {query}')
+
 
 @bot.command()
 async def plays(ctx, *, query):
@@ -133,3 +153,4 @@ async def plays(ctx, *, query):
 
 # client.run(TOKEN)
 bot.run(TOKEN)
+
